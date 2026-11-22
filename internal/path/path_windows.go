@@ -59,11 +59,3 @@ func GetConnectCache(cacheDir string) (map[string]string, error) {
 
 	return toStringMap(m["MachineUserConfigStore"].(map[string]any)["Software"].(map[string]any)["Valve"].(map[string]any)["Steam"].(map[string]any)["ConnectCache"].(map[string]any)), nil
 }
-
-func toStringMap(in map[string]any) map[string]string {
-	out := make(map[string]string, len(in))
-	for k, v := range in {
-		out[k] = v.(string)
-	}
-	return out
-}

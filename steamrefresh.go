@@ -56,7 +56,7 @@ func (c *Client) UserList() ([]User, error) {
 	return users, nil
 }
 
-// Returns cached refresh token for accountName if present, returns empty string if not present
+// Returns cached refresh token for accountName if present
 func (c *Client) Token(accountName string) (string, error) {
 	cc, err := path.GetConnectCache(c.SteamCacheDir)
 	if err != nil {
@@ -82,5 +82,5 @@ func (c *Client) Token(accountName string) (string, error) {
 		}
 	}
 
-	return "", nil
+	return "", ErrNoTokenEntry
 }
