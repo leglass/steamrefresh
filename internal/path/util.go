@@ -1,9 +1,15 @@
+//go:build !windows && !darwin && !linux
+
 package path
 
-func toStringMap(in map[string]any) map[string]string {
-	out := make(map[string]string, len(in))
-	for k, v := range in {
-		out[k] = v.(string)
-	}
-	return out
+import "errors"
+
+// Unsupported
+func localVDF(_ string) (string, error) {
+	return "", errors.ErrUnsupported
+}
+
+// Unsupported
+func loginUsersVDF(_ string) (string, error) {
+	return "", errors.ErrUnsupported
 }
