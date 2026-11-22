@@ -21,15 +21,15 @@ type DATA_BLOB struct {
 }
 
 // Decryption via DPAPI CryptUnprotectData with AccountName as entropy
-func Decrypt(entropy []byte, dataIn []byte) ([]byte, error) {
+func Decrypt(accountName []byte, dataIn []byte) ([]byte, error) {
 	var entropyBlob DATA_BLOB
 	var dataInBlob DATA_BLOB
 	var dataOutBlob DATA_BLOB
 	var pDescrOut uintptr
 
-	if len(entropy) > 0 {
-		entropyBlob.cbData = uint32(len(entropy))
-		entropyBlob.pbData = uintptr(unsafe.Pointer(&entropy[0]))
+	if len(accountName) > 0 {
+		entropyBlob.cbData = uint32(len(accountName))
+		entropyBlob.pbData = uintptr(unsafe.Pointer(&accountName[0]))
 	}
 
 	dataInBlob.cbData = uint32(len(dataIn))
@@ -46,7 +46,7 @@ func Decrypt(entropy []byte, dataIn []byte) ([]byte, error) {
 	)
 
 	if ret == 0 {
-		return nil, fmt.Errorf("CryptUnprotectData failed: %v", err)
+		return nil, fmt.Errorf("steamrefresh: CryptUnprotectData failed: %v", err)
 	}
 
 	// Convert to Go slice
