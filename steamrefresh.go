@@ -17,12 +17,6 @@ type Client struct {
 	// Darwin:   ~/Library/Application Support/Steam
 	// Linux:    ~/.local/share/Steam
 	SteamDir string
-
-	// Defaults to:
-	// Windows:  ~/AppData/Local/Steam
-	// MacOS:    ~/Library/Application Support/Steam
-	// Linux:    ~/.local/share/Steam
-	SteamCacheDir string
 }
 
 type User struct {
@@ -56,9 +50,9 @@ func (c *Client) UserList() ([]User, error) {
 	return users, nil
 }
 
-// Returns cached refresh token for accountName if present, returns empty string if not present
+// Returns cached refresh token for accountName if present
 func (c *Client) Token(accountName string) (string, error) {
-	cc, err := path.GetConnectCache(c.SteamCacheDir)
+	cc, err := path.GetConnectCache(c.SteamDir)
 	if err != nil {
 		if _, ok := errors.AsType[*fs.PathError](err); ok {
 			return "", ErrNoLocalCache
@@ -82,5 +76,5 @@ func (c *Client) Token(accountName string) (string, error) {
 		}
 	}
 
-	return "", nil
+	return "", ErrNoTokenEntry
 }

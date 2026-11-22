@@ -10,5 +10,5 @@ var (
 	ErrNoLoginUsers = errors.New("steamrefresh: loginusers.vdf is unable to be read at given SteamDir")
 
 	// ErrNoLoginUsers is returned when local.vdf is unable to be read.
-	ErrNoLocalCache = errors.New("steamrefresh: local.vdf is unable to be read at given SteamCacheDir")
+	ErrNoLocalCache = errors.New("steamrefresh: local.vdf is unable to be read at cache directory")
 )

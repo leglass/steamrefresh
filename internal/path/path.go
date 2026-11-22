@@ -1,15 +1,68 @@
-//go:build !windows
-
 package path
 
-import "errors"
+import (
+	"os"
+	"strconv"
 
-// Unsupported
+	"github.com/andygrunwald/vdf"
+)
+
+// Returns {AccountName, PersonaName} mapped to SteamID64
 func GetLoginUsers(steamDir string) (map[uint64][2]string, error) {
-	return nil, errors.ErrUnsupported
+	lu, err := loginUsersVDF(steamDir)
+	if err != nil {
+		return nil, err
+	}
+
+	users := make(map[uint64][2]string)
+
+	file, err := os.Open(lu)
+	if err != nil {
+		return nil, err
+	}
+
+	p := vdf.NewParser(file)
+	m, err := p.Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	for k, v := range m["users"].(map[string]any) {
+		steamid, err := strconv.ParseUint(k, 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		users[steamid] = [2]string{v.(map[string]any)["AccountName"].(string), v.(map[string]any)["PersonaName"].(string)}
+	}
+
+	return users, nil
 }
 
-// Unsupported
+// Obtains ConnectCache entries from local.vdf
 func GetConnectCache(steamDir string) (map[string]string, error) {
-	return nil, errors.ErrUnsupported
+	loc, err := localVDF(steamDir)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open(loc)
+	if err != nil {
+		return nil, err
+	}
+
+	p := vdf.NewParser(file)
+	m, err := p.Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	return toStringMap(m["MachineUserConfigStore"].(map[string]any)["Software"].(map[string]any)["Valve"].(map[string]any)["Steam"].(map[string]any)["ConnectCache"].(map[string]any)), nil
+}
+
+func toStringMap(in map[string]any) map[string]string {
+	out := make(map[string]string, len(in))
+	for k, v := range in {
+		out[k] = v.(string)
+	}
+	return out
 }
