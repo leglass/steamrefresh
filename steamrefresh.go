@@ -8,7 +8,7 @@ import (
 	"io/fs"
 
 	"github.com/leglass/steamrefresh/internal/crypto"
-	"github.com/leglass/steamrefresh/internal/path"
+	"github.com/leglass/steamrefresh/internal/store"
 )
 
 type Client struct {
@@ -28,7 +28,7 @@ type User struct {
 // Returns slice of cached User(s) in loginusers.vdf
 // Typically only one user is present at a time
 func (c *Client) UserList() ([]User, error) {
-	entries, err := path.GetLoginUsers(c.SteamDir)
+	entries, err := store.GetLoginUsers(c.SteamDir)
 	if err != nil {
 		if _, ok := errors.AsType[*fs.PathError](err); ok {
 			return nil, ErrNoLoginUsers
@@ -52,7 +52,7 @@ func (c *Client) UserList() ([]User, error) {
 
 // Returns cached refresh token for accountName if present
 func (c *Client) Token(accountName string) (string, error) {
-	cc, err := path.GetConnectCache(c.SteamDir)
+	cc, err := store.GetConnectCache(c.SteamDir)
 	if err != nil {
 		if _, ok := errors.AsType[*fs.PathError](err); ok {
 			return "", ErrNoLocalCache

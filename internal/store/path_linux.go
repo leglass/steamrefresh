@@ -1,6 +1,6 @@
-//go:build darwin
+//go:build linux
 
-package path
+package store
 
 import (
 	"os"
@@ -9,22 +9,22 @@ import (
 
 func loginUsersVDF(steamDir string) (string, error) {
 	if steamDir == "" {
-		applicationSupport, err := os.UserConfigDir()
+		home, err := os.UserHomeDir()
 		if err != nil {
 			return "", err
 		}
-		steamDir = filepath.Join(applicationSupport, "Steam")
+		steamDir = filepath.Join(home, ".local", "share", "Steam")
 	}
 	return filepath.Join(steamDir, "config", "loginusers.vdf"), nil
 }
 
 func localVDF(steamDir string) (string, error) {
 	if steamDir == "" {
-		applicationSupport, err := os.UserConfigDir()
+		home, err := os.UserHomeDir()
 		if err != nil {
 			return "", err
 		}
-		steamDir = filepath.Join(applicationSupport, "Steam")
+		steamDir = filepath.Join(home, ".local", "share", "Steam")
 	}
 	return filepath.Join(steamDir, "local.vdf"), nil
 }

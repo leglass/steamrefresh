@@ -1,6 +1,6 @@
 //go:build !windows && !darwin && !linux
 
-package path
+package store
 
 import "errors"
 

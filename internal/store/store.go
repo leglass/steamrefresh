@@ -1,4 +1,4 @@
-package path
+package store
 
 import (
 	"os"
